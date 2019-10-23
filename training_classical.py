@@ -1,8 +1,10 @@
 import pickle
+import random
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.pipeline import Pipeline
+
 
 def features(sentence, index):
     """ sentence: [w1, w2, ...], index: the index of the word """
@@ -57,8 +59,18 @@ with open('ph_corpus', 'rb') as ph:
 with open('proiel_corpus', 'rb') as proiel:
     word_list_proiel = pickle.load(proiel)
 
-train_X_ph, train_y_ph, test_X_ph, test_y_ph = get_train_and_test(word_list_ph)
-train_X_proiel, train_y_proiel, test_X_proiel, test_y_proiel = get_train_and_test(word_list_proiel)
+
+random.shuffle(word_list_ph)
+random.shuffle(word_list_proiel)
+
+short_length_ph = int(0.2*len(word_list_ph))
+short_length_proiel = int(0.2*len(word_list_proiel))
+
+word_list_ph_short = word_list_ph[:short_length_ph]
+word_list_proiel_short = word_list_proiel[:short_length_proiel]
+
+train_X_ph, train_y_ph, test_X_ph, test_y_ph = get_train_and_test(word_list_ph_short)
+train_X_proiel, train_y_proiel, test_X_proiel, test_y_proiel = get_train_and_test(word_list_proiel_short)
 
 clf_ph = Pipeline([
     ('vectorizer', DictVectorizer(sparse=False)),
@@ -93,5 +105,5 @@ print("Accuracy: " + str(clf_proiel.score(test_X_proiel, test_y_proiel)))
 with open('ph_classical_model', 'wb') as ph:
     pickle.dump(clf_ph, ph)
 
-with open('proiel_corpus', 'rb') as proiel:
+with open('proiel_classical_model', 'wb') as proiel:
     pickle.dump(clf_proiel, proiel)
