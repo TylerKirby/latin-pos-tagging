@@ -91,7 +91,7 @@ print ("Accuracy: " + str(clf_ph.score(test_X_ph, test_y_ph)))
 print('Starting training for proiel corpus')
 
 
-classifier_param = {'n_estimator: 2'}
+classifier_param = {'n_estimator': 2, 'max_depth': 2}
 
 clf_proiel = Pipeline([
     ('vectorizer', DictVectorizer(sparse=False)),
